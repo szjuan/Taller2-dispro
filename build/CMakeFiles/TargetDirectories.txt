@@ -1,5 +1,4 @@
-/Users/juanandress/Desktop/Dispro Taller Numero 2/build/CMakeFiles/PuntoTaller1.dir
-/Users/juanandress/Desktop/Dispro Taller Numero 2/build/CMakeFiles/Punto3_core.dir
-/Users/juanandress/Desktop/Dispro Taller Numero 2/build/CMakeFiles/Run_Punto_Taller3.dir
-/Users/juanandress/Desktop/Dispro Taller Numero 2/build/CMakeFiles/edit_cache.dir
-/Users/juanandress/Desktop/Dispro Taller Numero 2/build/CMakeFiles/rebuild_cache.dir
+C:/Users/aftru/OneDrive/Documentos/Taller2-dispro/build/CMakeFiles/Run_Punto_Taller1.dir
+C:/Users/aftru/OneDrive/Documentos/Taller2-dispro/build/CMakeFiles/Run_Punto_Taller3.dir
+C:/Users/aftru/OneDrive/Documentos/Taller2-dispro/build/CMakeFiles/edit_cache.dir
+C:/Users/aftru/OneDrive/Documentos/Taller2-dispro/build/CMakeFiles/rebuild_cache.dir
