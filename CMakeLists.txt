@@ -48,7 +48,6 @@ target_include_directories(Run_Punto_Taller1 PRIVATE
         ${COMMON_INCLUDES}
 )
 
-
 # ==========================
 # Punto Taller 3
 # ==========================
