@@ -183,6 +183,9 @@ Simula un **LFSR de 3 Flip-Flops con realimentación XOR** (Linear Feedback Shif
 
 Cada ciclo, los datos se desplazan de Q1 → Q2 → Q3, mientras que `D = XOR(Q2, Q3)` y el resultado de `Q3` hace que el contador cuente o no.
 
+A coninuación se encuentra la imagen de diagrama de tiempo de este circuito:
+![Circuito Punto 1.1](ImgsReadme/ResP1.1.png)
+
 ---
 
 #### b) Incrementador Serial de 4 Bits — `Incrementador_Serial_4Bits`
@@ -191,7 +194,7 @@ Cada ciclo, los datos se desplazan de Q1 → Q2 → Q3, mientras que `D = XOR(Q2
 
 Simula un **incrementador serial de 4 bits** compuesto por un registro de desplazamiento de 4 etapas (`Q0`–`Q3`) con reset síncrono, un Flip-Flop de acarreo serial (`QS`) con preset, y dos señales combinacionales:
 
-![Circuito Punto 1.2](ImgsReadme/CircP1.2.png)
+![Rta 1.1](ImgsReadme/CircP1.2.png)
 
 **Señales simuladas:** `clk`, `clr`, `pre`, `Q0`, `Q1`, `Q2`, `Q3`, `QS`, `G`, `P`.
 
@@ -202,6 +205,9 @@ En cada ciclo de reloj el dato se desplaza a través de la cadena `Q3 → Q2 →
 
 - `G = XOR(Q0, QS)` — bit de suma (salida serializada).  
 - `P = AND(Q0, QS)` — acarreo al siguiente ciclo.
+
+A coninuación se encuentra la imagen de diagrama de tiempo de este circuito:
+![Rta 1.2](ImgsReadme/ResP1.2.png)
 
 ---
 
@@ -230,6 +236,11 @@ En cada ciclo, los bits seriales `a0` y `b0` se procesan a través de dos etapas
 - `C  = OR(P0, P1)`  — acarreo total, que se retroalimenta a `QS` en el siguiente ciclo.
 
 Los buses A y B se convierten de 8 líneas de 1 bit a su representación hexadecimal de 2 caracteres usando `bus8_to_hex`.
+
+A coninuación se encuentra la imagen de diagrama de tiempo de este circuito:
+![Rta 1.3](ImgsReadme/ResP1.3.png)
+
+
 
 ### Punto 2 — Simulación de Flip-Flop D en Arduino
 
@@ -433,14 +444,27 @@ loop() → vacío (todo ocurre una sola vez en setup)
 
 ## Compilación y Ejecución
 
-El proyecto usa **CMake** (versión ≥ 3.20) para compilar los puntos en C.
+El proyecto usa **CMake** (versión ≥ 3.20) con **GCC** para compilar los puntos en C.
+
+### Puntos en C (Punto 1 y Punto 4)
+
+**1. Configurar y compilar** desde la raíz del proyecto:
 
 ```bash
-# Desde la raíz del proyecto
-mkdir build
-cd build
-cmake ..
-cmake --build .
+cmake -S . -B build
+cmake --build build
+```
+
+**2. Ejecutar** los programas generados:
+
+```bash
+# Windows
+.\build\Run_Punto_Taller1.exe
+.\build\Run_Punto_Taller3.exe
+
+# Linux / macOS
+./build/Run_Punto_Taller1
+./build/Run_Punto_Taller3
 ```
 
 Esto genera dos ejecutables:
@@ -450,8 +474,15 @@ Esto genera dos ejecutables:
 | `Run_Punto_Taller1` | Corre las simulaciones del Punto 1 (LFSR, Incrementador, Sumador) |
 | `Run_Punto_Taller3` | Imprime en consola el ASCII del Arduino UNO y del SN74HC595 |
 
-Para visualizar los diagramas de tiempo del Punto 1, copie la salida JSON generada por `Run_Punto_Taller1` y péguela en [https://wavedrom.com/editor.html](https://wavedrom.com/editor.html).
 
-Para los sketches de Arduino (Punto 3 y Punto 4), use el **Arduino IDE** o **PlatformIO**, seleccionando la placa correspondiente:
-- Punto 3: **Arduino UNO**
-- Punto 4 (EEPROM): **ESP8266** (por ejemplo, NodeMCU 1.0)
+### Puntos en Arduino (Punto 2, Punto 3 y Punto 4-EEPROM)
+
+Abrir el archivo `.ino` correspondiente en **Arduino IDE** (≥ 2.0) o **PlatformIO**, seleccionar la placa y cargar el sketch:
+
+| Archivo | Placa |
+|---|---|
+| `SolucionTaller/Punto2/FlipFlopDataArduino.ino` | Arduino UNO |
+| `SolucionTaller/Punto3/FlipFlopDataArduino.ino` | Arduino UNO |
+| `SolucionTaller/Punto4/CodigoArduinoASCII.ino`  | ESP8266 (NodeMCU 1.0) |
+
+La salida de los sketches se visualiza abriendo el **Monitor Serial** a **115200 bps**.

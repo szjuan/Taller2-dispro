@@ -1,0 +1,13 @@
+# Carpeta de compilación CMake
+build/
+
+# Archivos de IDE
+.idea/
+.vscode/
+*.user
+
+# Binarios y objetos
+*.exe
+*.out
+*.o
+*.obj
