@@ -8,7 +8,7 @@
 
 
 //PARCIAL 4
-int main14(void) {
+int Registro_de_Desplazamiento(void) {
 
     /* ================== SEÑALES ================== */
     int clk[MAX_TIEMPO] = {1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,

@@ -9,7 +9,7 @@
 #define MAX_TIEMPO 140
 
 //PARCIAL 1
-int main3(void) {
+int Incrementador_Serial_4Bits(void) {
 
     /* ================== SEÑALES ================== */
     int clk[MAX_TIEMPO] = {1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,

@@ -8,7 +8,7 @@
 #define MAX_TIEMPO 60
 
 //PARCIAL 4
-int main15(void) {
+int Sumador_Completo_8Bits(void) {
 
     /* ================== SEÑALES ================== */
     int clk[MAX_TIEMPO] = {1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,
