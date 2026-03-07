@@ -3,7 +3,6 @@
 #include "FormatoWaveDrom.h"
 #include "CambioDeBases.h"
 #include "Contadores_Bits.h"
-
 #include "Run_Punto1.h"
 
 #define MAX_TIEMPO 140
