@@ -53,7 +53,7 @@ target_include_directories(Run_Punto_Taller1 PRIVATE
 # Punto Taller 3
 # ==========================
 file(GLOB PUNTO3_SOURCES
-        "${CMAKE_CURRENT_SOURCE_DIR}/SolucionTaller/Punto3/*.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/SolucionTaller/Punto4/*.c"
 )
 
 add_executable(Run_Punto_Taller3
@@ -62,6 +62,6 @@ add_executable(Run_Punto_Taller3
 )
 
 target_include_directories(Run_Punto_Taller3 PRIVATE
-        "${CMAKE_CURRENT_SOURCE_DIR}/SolucionTaller/Punto3"
+        "${CMAKE_CURRENT_SOURCE_DIR}/SolucionTaller/Punto4"
         ${COMMON_INCLUDES}
 )
