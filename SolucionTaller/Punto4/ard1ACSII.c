@@ -1,8 +1,27 @@
 #include <stdio.h>
 #include "Run_Punto3.h"
 
+/*FN****************************************************************************
+*
+*   int Arduino1_ASCII( void )
+*
+*   Purpose: Print an ASCII-art representation of an Arduino UNO board
+*            to standard output, line by line, using a NULL-terminated
+*            array of strings.
+*
+*   Return:  0 - always (success)
+*
+*   Register of Revisions:
+*
+*   DATE           RESPONSIBLE
+*   -----------------------------------------------------------------------
+*   MAR 07/26  Andrés Felipe Trujillo
+*******************************************************************************/
 
 int Arduino1_ASCII(void) {
+
+/* Part 1: Define the ASCII figure as a NULL-terminated array of strings */
+
     const char *figura[] = {
         "Arduino UNO en ASCII",
         "               _______                                   _________",
@@ -42,6 +61,8 @@ int Arduino1_ASCII(void) {
         "            \\______________________________________________/",
         NULL
     };
+
+/* Part 2: Print each line until the NULL sentinel is reached */
 
     for (const char **linea = figura; *linea != NULL; linea++) {
         puts(*linea);
