@@ -32,6 +32,8 @@ add_executable(Run_Punto_Taller1
 
         "Circuitos Secuenciales Digitales/Contadores Bits/Contadores_4Bit.c"
         "Circuitos Secuenciales Digitales/Flip Flops/FlipFlop_gate.c"
+        "Funciones Principales/ImprimirCircuitosConsola/Dibujar_ASCII.c"
+        "Funciones Principales/ImprimirCircuitosConsola/CircuitosASCII.c"
 )
 
 target_include_directories(Run_Punto_Taller1 PRIVATE
@@ -40,6 +42,7 @@ target_include_directories(Run_Punto_Taller1 PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/Funciones Principales/Compuertas Logicas"
         "${CMAKE_CURRENT_SOURCE_DIR}/Funciones Principales/WaveDrom Format"
         "${CMAKE_CURRENT_SOURCE_DIR}/Funciones Principales/CambiosDeBase_Bus"
+        "${CMAKE_CURRENT_SOURCE_DIR}/Funciones Principales/ImprimirCircuitosConsola"
 
         "${CMAKE_CURRENT_SOURCE_DIR}/Circuitos Secuenciales Digitales/Contadores Bits"
         "${CMAKE_CURRENT_SOURCE_DIR}/Circuitos Secuenciales Digitales/Clocks"
