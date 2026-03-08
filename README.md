@@ -40,7 +40,7 @@ Este taller busca consolidar el dominio de los **circuitos secuenciales digitale
 ```
 Taller2-dispro/
 │
-├── Funciones Principales/          ← Librería base: compuertas, WaveDrom, conversión de bases
+├── Funciones Principales/          ← Librería base: compuertas, WaveDrom, conversión de bases, Dibujs en ASCII
 │   ├── Compuertas Logicas/
 │   │   ├── LogicGates.h
 │   │   ├── AND_gate.c
@@ -50,9 +50,14 @@ Taller2-dispro/
 │   ├── WaveDrom Format/
 │   │   ├── FormatoWaveDrom.h
 │   │   └── FormatoWaveDrom.c
-│   └── CambiosDeBase_Bus/
-│       ├── CambioDeBases.h
-│       └── Bus_Hexa.c
+│   │── CambiosDeBase_Bus/
+│   │   ├── CambioDeBases.h
+│   │   └── Bus_Hexa.c
+│   └── ImprimirCircuitosConsola/
+│       ├── CircuitosASCII.h
+│       │── CircuitosASCII.c
+│       │── DibujarASCII.h
+│       └── DibujarASCII.c
 │
 ├── Circuitos Secuenciales Digitales/  ← Librería base: Flip-Flops, Clocks, Contadores
 │   ├── Clocks/
@@ -118,6 +123,18 @@ Genera salida en formato JSON compatible con [WaveDrom](https://wavedrom.com/) p
 
 ---
 
+#### Imprimir Circuitos En Consola (`ImprimirCircuitosConsola/`)
+
+| Función                                                                             | Descripción                                                                 |
+|-------------------------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| `void draw_ascii(const char *art[])`                                                | Imprime un char hasta que encuentre `null` dentro del arreglo.              |
+| `void gotoxy(int x, int y)`                                                         | Mueve el cursor de la terminal a una poscion `x` y `y`.                     |
+| `const char *INCREMENTADOR[], const char *DESPLAZAMIENTO[],const char *SUMADOR[]`   | Arreglo que cuenta con los caracteres `ASCII` de cada uno de los circuitos. |
+
+
+
+
+
 ### Circuitos Secuenciales Digitales
 
 #### Clocks (`Clocks/`)
@@ -174,7 +191,7 @@ El ejecutable se llama `Run_Punto_Taller1` y llama en secuencia a las tres funci
 
 Simula un **LFSR de 3 Flip-Flops con realimentación XOR** (Linear Feedback Shift Register). El circuito corresponde al esquema del taller:
 
-![Circuito Punto 1.1](ImgsReadme/CircP1.png)
+![Circuito Punto 1.1](ImgsReadme/CircP1v2.png)
 
 **Señales simuladas:** `clk`, `clr`, `pre`, `Q0`, `Q1`, `Q2`, `Q3`, `QS` (carry serial), `G` (XOR), `P` (AND).
 
@@ -194,7 +211,7 @@ A coninuación se encuentra la imagen de diagrama de tiempo de este circuito:
 
 Simula un **incrementador serial de 4 bits** compuesto por un registro de desplazamiento de 4 etapas (`Q0`–`Q3`) con reset síncrono, un Flip-Flop de acarreo serial (`QS`) con preset, y dos señales combinacionales:
 
-![Rta 1.1](ImgsReadme/CircP1.2.png)
+![Rta 1.1](ImgsReadme/CircP2V2.png)
 
 **Señales simuladas:** `clk`, `clr`, `pre`, `Q0`, `Q1`, `Q2`, `Q3`, `QS`, `G`, `P`.
 
@@ -217,7 +234,7 @@ A coninuación se encuentra la imagen de diagrama de tiempo de este circuito:
 
 Simula un **sumador completo serial de 8 bits** con dos registros de desplazamiento (uno para operando A y otro para B) y un Flip-Flop de acarreo (`QS`):
 
-![Circuito Punto 1.3](ImgsReadme/CircP1.3.png)
+![Circuito Punto 1.3](ImgsReadme/CircP3V2.png)
 
 **Valores iniciales:**
 - Operando A: `A7=1, A6=1, A5=1, A4=0, A3=0, A2=1, A1=1, A0=0` → `1110 0110` = `0xE6` (decimal 230)
@@ -469,10 +486,10 @@ cmake --build build
 
 Esto genera dos ejecutables:
 
-| Ejecutable | Descripción |
-|---|---|
-| `Run_Punto_Taller1` | Corre las simulaciones del Punto 1 (LFSR, Incrementador, Sumador) |
-| `Run_Punto_Taller3` | Imprime en consola el ASCII del Arduino UNO y del SN74HC595 |
+| Ejecutable | Descripción                                                                                                            |
+|---|------------------------------------------------------------------------------------------------------------------------|
+| `Run_Punto_Taller1` | Corre las simulaciones del Punto 1 (LFSR, Incrementador, Sumador) junto con el ASCII de cada una de las simulaciones.  |
+| `Run_Punto_Taller3` | Imprime en consola el ASCII del Arduino UNO y del SN74HC595                                                            |
 
 
 ### Puntos en Arduino (Punto 2, Punto 3 y Punto 4-EEPROM)
