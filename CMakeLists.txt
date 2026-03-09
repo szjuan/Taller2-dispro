@@ -85,7 +85,6 @@ target_include_directories(Run_Punto_Taller5a PRIVATE
 # Punto Taller QuieroSacar5EnDispro
 # ==========================
 add_custom_target(QuieroSacar5EnDispro
-        COMMAND open "shifter.html"
-        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/SolucionTaller/Punto5"
-        COMMENT "Abriendo shifter.html"
+        COMMAND open ${CMAKE_CURRENT_SOURCE_DIR}/SolucionTaller/Punto5/shiftregister.html
 )
+
