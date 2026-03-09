@@ -453,9 +453,49 @@ loop() → vacío (todo ocurre una sola vez en setup)
 
 ---
 
-### Punto 5 — Pendiente
+### Punto 5 — Simulación del Registro de Desplazamiento SN74HC595
 
-*La solución de este punto está en desarrollo.*
+**Archivo:** `SolucionTaller/Punto5/SN74HC595.c`
+
+Simula el comportamiento completo del **CI SN74HC595**, un registro de desplazamiento serial de 8 bits con registro de almacenamiento paralelo, y genera la salida en formato **WaveDrom JSON**.
+
+#### Descripción del circuito
+
+El SN74HC595 está compuesto por dos registros en cascada:
+
+- **Registro de desplazamiento (SH):** captura el dato serial (`SER`) en cada flanco de subida de `SRCLK`. Tiene clear asíncrono activo en bajo (`SRCLR#`).
+- **Registro de almacenamiento (ST):** captura el estado del registro de desplazamiento en cada flanco de subida de `RCLK`. No tiene clear.
+- **Salidas Q (QA–QH):** reflejan el registro de almacenamiento. Cuando `OE#` está activo en alto, las salidas pasan a alta impedancia (`x`).
+- **QH':** salida serie del último bit del registro de desplazamiento (`SH7`), usada para encadenar varios 74HC595.
+
+#### Señales simuladas
+
+| Señal | Descripción |
+|---|---|
+| `SRCLK` | Reloj del registro de desplazamiento |
+| `SER` | Dato serial de entrada |
+| `RCLK` | Reloj del registro de almacenamiento |
+| `SRCLR#` | Clear asíncrono activo en bajo del shift register |
+| `OE#` | Output enable activo en alto — pone QA–QH en alta impedancia |
+| `SH0`–`SH7` | Bits internos del registro de desplazamiento |
+| `ST0`–`ST7` | Bits internos del registro de almacenamiento |
+| `QA`–`QH` | Salidas paralelas (`x` cuando OE# activo) |
+| `QH'` | Salida serie del bit SH7 |
+
+#### Salida WaveDrom
+
+El programa imprime directamente el JSON listo para pegar en [wavedrom.com](https://wavedrom.com/), organizado en cuatro grupos:
+
+- `[Control]` — señales de entrada del CI.
+- `[Shift Register (SH)]` — estado interno del registro de desplazamiento.
+- `[Storage Register (ST)]` — estado interno del registro de almacenamiento.
+- `[Output (Q)]` — salidas paralelas con soporte de alta impedancia (`x`) y `QH'`.
+
+A continuación se encuentra la imagen del diagrama de tiempo generado:
+![Rta Punto 5](ImgsReadme/ResP5.png)
+
+Adicionalmente, se puede observar el funcionamiento de este componente en tiempo real utilizando el simulador que se encuentra en la siguiente
+sección de código ejecutable.
 
 ---
 
