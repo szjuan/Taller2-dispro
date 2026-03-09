@@ -67,3 +67,25 @@ target_include_directories(Run_Punto_Taller3 PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/SolucionTaller/Punto4"
         ${COMMON_INCLUDES}
 )
+
+# ==========================
+# Punto Taller 5A
+# ==========================
+add_executable(Run_Punto_Taller5a
+        ${CMAKE_CURRENT_SOURCE_DIR}/SolucionTaller/Punto5/Run_Punto5A.c
+        ${COMMON_SOURCES}
+)
+
+target_include_directories(Run_Punto_Taller5a PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/SolucionTaller/Punto5"
+        ${COMMON_INCLUDES}
+)
+
+# ==========================
+# Punto Taller QuieroSacar5EnDispro
+# ==========================
+add_custom_target(QuieroSacar5EnDispro
+        COMMAND open "shifter.html"
+        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/SolucionTaller/Punto5"
+        COMMENT "Abriendo shifter.html"
+)

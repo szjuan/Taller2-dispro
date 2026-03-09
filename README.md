@@ -482,14 +482,17 @@ cmake --build build
 # Linux / macOS
 ./build/Run_Punto_Taller1
 ./build/Run_Punto_Taller3
+
 ```
 
 Esto genera dos ejecutables:
 
-| Ejecutable | Descripción                                                                                                            |
-|---|------------------------------------------------------------------------------------------------------------------------|
-| `Run_Punto_Taller1` | Corre las simulaciones del Punto 1 (LFSR, Incrementador, Sumador) junto con el ASCII de cada una de las simulaciones.  |
-| `Run_Punto_Taller3` | Imprime en consola el ASCII del Arduino UNO y del SN74HC595                                                            |
+| Ejecutable             | Descripción                                                                                                           |
+|------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| `Run_Punto_Taller1`    | Corre las simulaciones del Punto 1 (LFSR, Incrementador, Sumador) junto con el ASCII de cada una de las simulaciones. |
+| `Run_Punto_Taller3`    | Imprime en consola el ASCII del Arduino UNO y del SN74HC595                                                           |
+| `Run_Punto_Taller5a`   | XXXXX                                                                                                                 |
+| `QuieroSacar5EnDispro` | XXXXX                                                                                                                 |
 
 
 ### Puntos en Arduino (Punto 2, Punto 3 y Punto 4-EEPROM)
