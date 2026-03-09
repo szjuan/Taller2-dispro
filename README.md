@@ -464,7 +464,7 @@ Simula el comportamiento completo del **CI SN74HC595**, un registro de desplazam
 El SN74HC595 está compuesto por dos registros en cascada:
 
 - **Registro de desplazamiento (SH):** captura el dato serial (`SER`) en cada flanco de subida de `SRCLK`. Tiene clear asíncrono activo en bajo (`SRCLR#`).
-- **Registro de almacenamiento (ST):** captura el estado del registro de desplazamiento en cada flanco de subida de `RCLK`. No tiene clear.
+- **Registro de almacenamiento (ST):** captura el estado del registro de desplazamiento en cada flanco de subida de `RCLK`. 
 - **Salidas Q (QA–QH):** reflejan el registro de almacenamiento. Cuando `OE#` está activo en alto, las salidas pasan a alta impedancia (`x`).
 - **QH':** salida serie del último bit del registro de desplazamiento (`SH7`), usada para encadenar varios 74HC595.
 
