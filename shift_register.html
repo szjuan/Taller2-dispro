@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>74HC595 Shift Register</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap');
+
+  :root {
+    --green: #00ff41;
+    --green-dim: #00aa2a;
+    --green-faint: #003310;
+    --green-mid: #00cc33;
+    --amber: #ffb300;
+    --red: #ff3333;
+    --bg: #020e04;
+    --panel: #040f06;
+    --border: #0a3a10;
+    --hi: #00ff41;
+    --lo: #003310;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--green);
+    font-family: 'Share Tech Mono', monospace;
+    min-height: 100vh;
+    padding: 24px 16px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* CRT scanline overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.18) 2px,
+      rgba(0,0,0,0.18) 4px
+    );
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  /* Screen flicker */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.45) 100%);
+    pointer-events: none;
+    z-index: 998;
+  }
+
+  h1 {
+    font-family: 'VT323', monospace;
+    font-size: 2.4rem;
+    letter-spacing: 0.12em;
+    text-align: center;
+    color: var(--green);
+    text-shadow: 0 0 12px var(--green), 0 0 30px rgba(0,255,65,0.3);
+    margin-bottom: 4px;
+  }
+
+  .subtitle {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--green-dim);
+    letter-spacing: 0.2em;
+    margin-bottom: 28px;
+  }
+
+  .main-grid {
+    max-width: 860px;
+    margin: 0 auto;
+    display: grid;
+    gap: 18px;
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 20px;
+    box-shadow: 0 0 20px rgba(0,255,65,0.04), inset 0 0 30px rgba(0,0,0,0.5);
+  }
+
+  .panel-title {
+    font-family: 'VT323', monospace;
+    font-size: 1.1rem;
+    letter-spacing: 0.25em;
+    color: var(--green-dim);
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 6px;
+  }
+
+  /* ── Controls ── */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .ctrl-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .ctrl-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--green-dim);
+  }
+
+  /* Momentary buttons */
+  .btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    background: #000;
+    color: var(--green);
+    border: 1px solid var(--green-dim);
+    border-radius: 3px;
+    padding: 8px 18px;
+    cursor: pointer;
+    transition: all 0.05s;
+    text-shadow: 0 0 6px rgba(0,255,65,0.5);
+    user-select: none;
+  }
+  .btn:hover { border-color: var(--green); box-shadow: 0 0 10px rgba(0,255,65,0.25); }
+  .btn:active, .btn.active {
+    background: var(--green);
+    color: #000;
+    box-shadow: 0 0 18px var(--green);
+    text-shadow: none;
+  }
+
+  /* Toggle buttons */
+  .btn-toggle {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    border-radius: 3px;
+    padding: 8px 18px;
+    cursor: pointer;
+    transition: all 0.12s;
+    user-select: none;
+    border: 1px solid;
+  }
+  .btn-toggle.on {
+    background: var(--green);
+    color: #000;
+    border-color: var(--green);
+    box-shadow: 0 0 14px var(--green);
+    font-weight: bold;
+  }
+  .btn-toggle.off {
+    background: #000;
+    color: var(--green-dim);
+    border-color: var(--border);
+    text-shadow: none;
+  }
+
+  /* SER bit buttons row */
+  .ser-bits {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .bit-btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    width: 36px; height: 36px;
+    border-radius: 3px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: #000;
+    color: var(--green-dim);
+    transition: all 0.08s;
+  }
+  .bit-btn.set {
+    background: var(--green);
+    color: #000;
+    border-color: var(--green);
+    box-shadow: 0 0 10px var(--green);
+    font-weight: bold;
+  }
+
+  /* ── Register display ── */
+  .register-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 10px;
+  }
+
+  .reg-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    color: var(--green-dim);
+    width: 52px;
+    flex-shrink: 0;
+  }
+
+  .reg-cells {
+    display: flex;
+    gap: 3px;
+  }
+
+  .cell {
+    width: 38px; height: 38px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'VT323', monospace;
+    font-size: 1.5rem;
+    transition: all 0.1s;
+    position: relative;
+  }
+  .cell.hi {
+    background: rgba(0,255,65,0.12);
+    border-color: var(--green-mid);
+    color: var(--green);
+    text-shadow: 0 0 8px var(--green);
+    box-shadow: inset 0 0 10px rgba(0,255,65,0.15);
+  }
+  .cell.lo {
+    background: var(--lo);
+    border-color: #012208;
+    color: #003310;
+  }
+  .cell.hiz {
+    background: rgba(255,80,0,0.06);
+    border-color: #443;
+    color: #886633;
+    font-size: 1.1rem;
+  }
+
+  .cell-idx {
+    position: absolute;
+    top: 2px; right: 3px;
+    font-size: 0.45rem;
+    color: var(--green-faint);
+    font-family: 'Share Tech Mono', monospace;
+    letter-spacing: 0;
+  }
+  .cell.hi .cell-idx { color: var(--green-dim); }
+
+  /* Arrow between shift and storage */
+  .arrow-col {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 0 10px;
+    align-self: stretch;
+    justify-content: center;
+    align-items: center;
+  }
+  .arrow-sym {
+    color: var(--green-dim);
+    font-size: 1.1rem;
+    letter-spacing: 0;
+    line-height: 1;
+  }
+
+  /* Q outputs */
+  .q-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  .q-pin {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+  .q-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    color: var(--green-dim);
+  }
+  .q-cell {
+    width: 38px; height: 38px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'VT323', monospace;
+    font-size: 1.5rem;
+    transition: all 0.1s;
+  }
+  .q-cell.hi { background: rgba(0,255,65,0.12); border-color: var(--green-mid); color: var(--green); text-shadow: 0 0 8px var(--green); }
+  .q-cell.lo { background: var(--lo); border-color: #012208; color: #003310; }
+  .q-cell.hiz { background: rgba(255,80,0,0.06); border-color: #443; color: #886633; font-size: 1.1rem; }
+
+  /* QH' serial out */
+  .qhp-wrap {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.75rem;
+    color: var(--green-dim);
+  }
+
+  /* Status / log */
+  .log {
+    height: 72px;
+    overflow-y: auto;
+    font-size: 0.7rem;
+    color: var(--green-dim);
+    line-height: 1.6;
+    padding: 4px 0;
+  }
+  .log div { border-bottom: 1px solid #010f03; padding: 1px 0; }
+  .log div:last-child { color: var(--green); }
+
+  /* Signal indicator LEDs */
+  .led-row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .led-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+  }
+  .led {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    border: 1px solid #015010;
+    background: #001a04;
+    transition: all 0.08s;
+    flex-shrink: 0;
+  }
+  .led.on {
+    background: var(--green);
+    border-color: var(--green);
+    box-shadow: 0 0 8px var(--green), 0 0 16px rgba(0,255,65,0.4);
+  }
+  .led.amber { background: #661; border-color: #aa8800; }
+  .led.amber.on { background: var(--amber); border-color: var(--amber); box-shadow: 0 0 8px var(--amber); }
+
+  /* serial-in diagram arrow */
+  .ser-in-arrow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    font-size: 0.7rem;
+    color: var(--green-dim);
+  }
+  .arrow-line {
+    height: 1px;
+    width: 30px;
+    background: var(--green-dim);
+    position: relative;
+  }
+  .arrow-line::after {
+    content: '▶';
+    position: absolute;
+    right: -8px;
+    top: -7px;
+    font-size: 0.7rem;
+    color: var(--green-dim);
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 14px 0;
+  }
+
+  .step-hint {
+    font-size: 0.65rem;
+    color: #004d14;
+    letter-spacing: 0.15em;
+    margin-top: 10px;
+  }
+
+  .clk-pulse {
+    animation: pulse-flash 0.18s ease-out;
+  }
+  @keyframes pulse-flash {
+    0%   { box-shadow: 0 0 0 rgba(0,255,65,0); }
+    30%  { box-shadow: 0 0 22px rgba(0,255,65,0.8); }
+    100% { box-shadow: none; }
+  }
+
+  /* responsive */
+  @media (max-width: 600px) {
+    .cell, .q-cell { width: 32px; height: 32px; font-size: 1.3rem; }
+    .reg-label { width: 44px; font-size: 0.6rem; }
+  }
+</style>
+</head>
+<body>
+
+<h1>74HC595</h1>
+<div class="subtitle">SHIFT REGISTER SIMULATOR // INTERACTIVE</div>
+
+<div class="main-grid">
+
+  <!-- Controls panel -->
+  <div class="panel">
+    <div class="panel-title">[ CONTROL INPUTS ]</div>
+
+    <div class="controls">
+
+      <div class="ctrl-group">
+        <div class="ctrl-label">SERIAL IN</div>
+        <button class="btn-toggle off" id="btn-ser" onclick="toggleSER()">SER</button>
+      </div>
+
+      <div class="ctrl-group">
+        <div class="ctrl-label">SHIFT CLK</div>
+        <button class="btn" id="btn-srclk" onmousedown="pulseBtn(this)" onmouseup="unpulseBtn(this)" ontouchstart="pulseBtn(this);srclkPulse()" ontouchend="unpulseBtn(this)" onclick="srclkPulse()">SRCLK ↑</button>
+      </div>
+
+      <div class="ctrl-group">
+        <div class="ctrl-label">STORAGE CLK</div>
+        <button class="btn" id="btn-rclk" onmousedown="pulseBtn(this)" onmouseup="unpulseBtn(this)" ontouchstart="pulseBtn(this);rclkPulse()" ontouchend="unpulseBtn(this)" onclick="rclkPulse()">RCLK ↑</button>
+      </div>
+
+      <div class="ctrl-group">
+        <div class="ctrl-label">CLEAR# (active lo)</div>
+        <button class="btn-toggle on" id="btn-srclr" onclick="toggleSRCLR()">SRCLR#</button>
+      </div>
+
+      <div class="ctrl-group">
+        <div class="ctrl-label">OUTPUT EN# (active lo)</div>
+        <button class="btn-toggle off" id="btn-oe" onclick="toggleOE()">OE#</button>
+      </div>
+
+    </div>
+
+    <!-- Signal LEDs -->
+    <div class="led-row">
+      <div class="led-item"><div class="led" id="led-ser"></div> SER</div>
+      <div class="led-item"><div class="led" id="led-srclk"></div> SRCLK</div>
+      <div class="led-item"><div class="led" id="led-rclk"></div> RCLK</div>
+      <div class="led-item"><div class="led amber" id="led-srclr"></div> SRCLR#</div>
+      <div class="led-item"><div class="led amber" id="led-oe"></div> OE#</div>
+    </div>
+
+    <div class="step-hint">▸ TOGGLE SER → PULSE SRCLK TO SHIFT IN → PULSE RCLK TO LATCH → TOGGLE OE# TO ENABLE OUTPUTS</div>
+  </div>
+
+  <!-- Register display -->
+  <div class="panel">
+    <div class="panel-title">[ REGISTER STATE ]</div>
+
+    <!-- Shift register row -->
+    <div class="ser-in-arrow">
+      <span>SER</span>
+      <div class="arrow-line"></div>
+    </div>
+
+    <div class="register-row">
+      <div class="reg-label">SHIFT<br>REG</div>
+      <div class="reg-cells" id="shift-cells"></div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="register-row" style="margin-bottom:0">
+      <div class="reg-label">STORAGE<br>REG</div>
+      <div class="reg-cells" id="storage-cells"></div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Q outputs -->
+    <div style="font-size:0.7rem; color:var(--green-dim); margin-bottom:8px; letter-spacing:0.15em;">OUTPUT PINS (Q)</div>
+    <div class="q-row" id="q-pins"></div>
+
+    <!-- QH' -->
+    <div class="qhp-wrap">
+      <span>QH' (serial out) →</span>
+      <div class="q-cell" id="qhp-cell">0</div>
+    </div>
+  </div>
+
+  <!-- Log -->
+  <div class="panel">
+    <div class="panel-title">[ EVENT LOG ]</div>
+    <div class="log" id="log"></div>
+  </div>
+
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+let SH = [0,0,0,0,0,0,0,0]; // shift register
+let ST = [0,0,0,0,0,0,0,0]; // storage register
+
+// Input signal levels
+let ser   = 0;
+let srclr = 1; // active low, normally high = enabled
+let oe    = 0; // active low, 0 = outputs enabled
+
+// ── DOM refs ──────────────────────────────────────────────────────────────
+function buildCells() {
+  const sc = document.getElementById('shift-cells');
+  const stc = document.getElementById('storage-cells');
+  const qp = document.getElementById('q-pins');
+  const qNames = ['QA','QB','QC','QD','QE','QF','QG','QH'];
+
+  sc.innerHTML = '';
+  stc.innerHTML = '';
+  qp.innerHTML = '';
+
+  for (let b = 0; b < 8; b++) {
+    const d = document.createElement('div');
+    d.className = 'cell lo';
+    d.id = `sh${b}`;
+    d.innerHTML = `<span class="cell-idx">${b}</span>0`;
+    sc.appendChild(d);
+  }
+  for (let b = 0; b < 8; b++) {
+    const d = document.createElement('div');
+    d.className = 'cell lo';
+    d.id = `st${b}`;
+    d.innerHTML = `<span class="cell-idx">${b}</span>0`;
+    stc.appendChild(d);
+  }
+  for (let b = 0; b < 8; b++) {
+    const wrap = document.createElement('div');
+    wrap.className = 'q-pin';
+    wrap.innerHTML = `<div class="q-label">${qNames[b]}</div><div class="q-cell lo" id="q${b}">0</div>`;
+    qp.appendChild(wrap);
+  }
+}
+
+function updateDisplay() {
+  for (let b = 0; b < 8; b++) {
+    setCell(`sh${b}`, SH[b]);
+    setCell(`st${b}`, ST[b]);
+    // Q is high-z if OE# is high (output disabled)
+    const qVal = oe ? -1 : ST[b];
+    setQCell(`q${b}`, qVal);
+  }
+  // QH' = serial output = shift register bit 7, always active
+  const qhpEl = document.getElementById('qhp-cell');
+  qhpEl.textContent = SH[7];
+  qhpEl.className = `q-cell ${SH[7] ? 'hi' : 'lo'}`;
+
+  // LEDs
+  setLed('led-ser',   ser);
+  setLed('led-srclr', srclr);
+  setLed('led-oe',    oe);
+}
+
+function setCell(id, val) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.className = `cell ${val ? 'hi' : 'lo'}`;
+  el.innerHTML = `<span class="cell-idx">${el.querySelector('.cell-idx')?.textContent || ''}</span>${val}`;
+}
+
+function setQCell(id, val) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (val === -1) {
+    el.className = 'q-cell hiz';
+    el.textContent = 'Z';
+  } else {
+    el.className = `q-cell ${val ? 'hi' : 'lo'}`;
+    el.textContent = val;
+  }
+}
+
+function setLed(id, val) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (val) el.classList.add('on'); else el.classList.remove('on');
+}
+
+// ── Controls ──────────────────────────────────────────────────────────────
+function toggleSER() {
+  ser = ser ? 0 : 1;
+  const btn = document.getElementById('btn-ser');
+  btn.className = `btn-toggle ${ser ? 'on' : 'off'}`;
+  btn.textContent = `SER ${ser ? '= 1' : '= 0'}`;
+  setLed('led-ser', ser);
+  log(`SER set to ${ser}`);
+}
+
+function toggleSRCLR() {
+  srclr = srclr ? 0 : 1;
+  const btn = document.getElementById('btn-srclr');
+  btn.className = `btn-toggle ${srclr ? 'on' : 'off'}`;
+  btn.textContent = `SRCLR# ${srclr ? '(HI)' : '(LO=CLR!)'}`;
+  setLed('led-srclr', srclr);
+  if (!srclr) {
+    SH = [0,0,0,0,0,0,0,0];
+    log('⚡ SRCLR# LOW → Shift register CLEARED');
+    updateDisplay();
+  } else {
+    log('SRCLR# HIGH (clear released)');
+  }
+}
+
+function toggleOE() {
+  oe = oe ? 0 : 1;
+  const btn = document.getElementById('btn-oe');
+  btn.className = `btn-toggle ${oe ? 'on' : 'off'}`;
+  btn.textContent = `OE# ${oe ? '(HI=DIS)' : '(LO=EN)'}`;
+  setLed('led-oe', oe);
+  log(`OE# ${oe ? 'HIGH → outputs HIGH-Z (disabled)' : 'LOW → outputs enabled'}`);
+  updateDisplay();
+}
+
+function srclkPulse() {
+  if (!srclr) {
+    log('⚠ SRCLK ignored — SRCLR# is LOW (clear active)');
+    flashLed('led-srclk');
+    return;
+  }
+  // Shift: SH[7..1] = SH[6..0], SH[0] = ser
+  for (let b = 7; b > 0; b--) SH[b] = SH[b-1];
+  SH[0] = ser;
+  log(`▲ SRCLK ↑ — shifted in SER=${ser}  SH=[${SH.join('')}]`);
+  flashLed('led-srclk');
+  flashRegion('shift-cells');
+  updateDisplay();
+}
+
+function rclkPulse() {
+  // Latch SH into ST
+  ST = [...SH];
+  log(`▲ RCLK ↑ — latched to storage  ST=[${ST.join('')}]`);
+  flashLed('led-rclk');
+  flashRegion('storage-cells');
+  updateDisplay();
+}
+
+function flashLed(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.add('on');
+  setTimeout(() => el.classList.remove('on'), 160);
+}
+
+function flashRegion(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.add('clk-pulse');
+  setTimeout(() => el.classList.remove('clk-pulse'), 220);
+}
+
+function pulseBtn(el)   { el.classList.add('active'); }
+function unpulseBtn(el) { setTimeout(() => el.classList.remove('active'), 160); }
+
+// ── Log ───────────────────────────────────────────────────────────────────
+let logCount = 0;
+function log(msg) {
+  const el = document.getElementById('log');
+  const ts = String(logCount++).padStart(4, '0');
+  const div = document.createElement('div');
+  div.textContent = `[${ts}] ${msg}`;
+  el.appendChild(div);
+  el.scrollTop = el.scrollHeight;
+  // trim
+  while (el.children.length > 60) el.removeChild(el.firstChild);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+buildCells();
+updateDisplay();
+log('74HC595 simulator ready. SRCLR#=1, OE#=0');
+</script>
+</body>
+</html>
