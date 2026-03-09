@@ -238,7 +238,7 @@
   .cell.lo {
     background: var(--lo);
     border-color: #012208;
-    color: #003310;
+    color: #1a6b2a;
   }
   .cell.hiz {
     background: rgba(255,80,0,0.06);
@@ -304,7 +304,7 @@
     transition: all 0.1s;
   }
   .q-cell.hi { background: rgba(0,255,65,0.12); border-color: var(--green-mid); color: var(--green); text-shadow: 0 0 8px var(--green); }
-  .q-cell.lo { background: var(--lo); border-color: #012208; color: #003310; }
+  .q-cell.lo { background: var(--lo); border-color: #012208; color: #1a6b2a; }
   .q-cell.hiz { background: rgba(255,80,0,0.06); border-color: #443; color: #886633; font-size: 1.1rem; }
 
   /* QH' serial out */
@@ -532,6 +532,7 @@ function buildCells() {
     const d = document.createElement('div');
     d.className = 'cell lo';
     d.id = `sh${b}`;
+    d.dataset.idx = b;
     d.innerHTML = `<span class="cell-idx">${b}</span>0`;
     sc.appendChild(d);
   }
@@ -539,6 +540,7 @@ function buildCells() {
     const d = document.createElement('div');
     d.className = 'cell lo';
     d.id = `st${b}`;
+    d.dataset.idx = b;
     d.innerHTML = `<span class="cell-idx">${b}</span>0`;
     stc.appendChild(d);
   }
@@ -573,7 +575,8 @@ function setCell(id, val) {
   const el = document.getElementById(id);
   if (!el) return;
   el.className = `cell ${val ? 'hi' : 'lo'}`;
-  el.innerHTML = `<span class="cell-idx">${el.querySelector('.cell-idx')?.textContent || ''}</span>${val}`;
+  const idx = el.dataset.idx;
+  el.innerHTML = `<span class="cell-idx">${idx}</span>${val}`;
 }
 
 function setQCell(id, val) {
