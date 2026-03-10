@@ -1,3 +1,5 @@
+/********************************** Headers ***********************************/
+
 /* ------------------------ Inclusion of Std Headers ------------------------ */
 
 #include <stdio.h> /* Due to: printf, putchar */
@@ -8,19 +10,18 @@
 
 /* ----------------- Predefined Sizes of Arrays and Strings ----------------- */
 
-#define MAX     34      /* Number of samples along time   */
-#define HALF    (MAX/2) /* Downsampled signal length       */
+#define MAX     62     /* Number of samples along time   */
+#define HALF    (MAX/2) /* Downsampled signal length     */
 
 /************************** Prototypes of Functions ***************************/
 
 /* ----------------- Public Functions defined after main() ------------------ */
 
-static void Print_Wave    ( const char *, int, const int *, float, int );
-static void Print_Wave_X  ( const char *, int, const int *, float, int );
-static void Print_Clock   ( const char *, int, const int *, float, int );
-static void Downsample2   ( const int *, int, int * );
-static int  Rising_Edge   ( int, int );
-static void DFF           ( int *, int, int, int, int, int * );
+static void Print_Wave_X( const char *, int, const int *, float, int );
+static void Print_Clock ( const char *, int, const int *, float, int, int );
+static void Downsample2 ( const int *, int, int * );
+static int  Rising_Edge ( int, int );
+static void DFF         ( int *, int, int, int, int, int * );
 
 /******************************* Main Function ********************************/
 
@@ -50,24 +51,25 @@ int main( void )
 /* Part 1: Define input signals */
 
 int srclk[MAX] = {
-    1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,
-    1,0,1,0,1,0,1,0,1,0,1,0,1,0
+    1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,
+    1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0
 };
+
 int rclk[MAX] = {
-    0,0,0,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,
-    1,0,0,0,1,0,0,0,0,0,1,0,0,0
+    0,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,
+    0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0
 };
 int ser[MAX] = {
-    0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,1,1,0,0,0,0,0,0,0,0,0,0,0
+    0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 };
 int srclr[MAX] = {
-    0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-    1,1,1,1,1,1,1,0,0,1,1,1,1,1
+    0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1
 };
 int oe[MAX] = {
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,1,1,1,1,0,0,0,0,0,0,0,0,0
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 };
 
 /* Part 2: Initialize state arrays */
@@ -85,7 +87,7 @@ for( int i = 1; i < MAX; i++ ) {
     for( int b = 1; b < 8; b++ )
         DFF( &SH[b], srclk[i-1], srclk[i], srclr[i], sh[b-1][i-1], &sh[b][i] );
     for( int b = 0; b < 8; b++ )
-        DFF( &ST[b], rclk[i-1],  rclk[i],  1,        sh[b][i-1],   &st[b][i] );
+        DFF( &ST[b], rclk[i-1],  rclk[i],  1,        sh[b][i],   &st[b][i] );
     for( int b = 0; b < 8; b++ )
         q[b][i] = oe[i] ? -1 : st[b][i];
 
@@ -114,22 +116,14 @@ static const char *qn[8]  = {"QA", "QB", "QC", "QD", "QE", "QF", "QG", "QH"};
 
 printf( "{ \"signal\": [\n" );
 
-printf( " [\"Control\"],\n" );
-Print_Clock( "SRCLK",  MAX,  srclk,  0.0f, 0 );
-Print_Wave ( "SER",    HALF, _ser,   0.5f, 0 );
-Print_Clock( "RCLK",   MAX,  rclk,   0.5f, 0 );
-Print_Wave ( "SRCLR#", HALF, _srclr, 0.0f, 0 );
-Print_Wave ( "OE#",    HALF, _oe,    0.5f, 0 );
+Print_Clock( "SRCLK",  MAX,  srclk,  0.0f, 0, 0 );
+Print_Wave_X ( "SER",    HALF, _ser,   0.0f, 0 );
+Print_Clock( "RCLK",   MAX,  rclk,   1.0f, 2, 0 );
+Print_Wave_X ( "SRCLR", HALF, _srclr, 0.0f, 0 );
+Print_Wave_X ( "OE",    HALF, _oe,    0.0f, 0 );
 
-printf( " {},\n [\"Shift Register (SH)\"],\n" );
-for( int b = 0; b < 8; b++ ) Print_Wave( shn[b], HALF, _sh[b], 0.0f, 0 );
-
-printf( " {},\n [\"Storage Register (ST)\"],\n" );
-for( int b = 0; b < 8; b++ ) Print_Wave( stn[b], HALF, _st[b], 0.0f, 0 );
-
-printf( " {},\n [\"Output (Q)\"],\n" );
-for( int b = 0; b < 8; b++ ) Print_Wave_X( qn[b], HALF, _q[b], 0.5f, 0 );
-Print_Wave( "QH'", HALF, _sh7, 0.0f, 1 );
+for( int b = 0; b < 8; b++ ) Print_Wave_X( qn[b], HALF, _q[b], 0.0f, 0 );
+Print_Wave_X( "QH'", HALF, _sh7, 0.0f, 1 );
 
 printf( "] }\n" );
 
@@ -170,7 +164,7 @@ return !prev_clk && clk;
 *   Purpose: Simulate a D flip-flop with async active-low clear.
 *
 *   Parameters:
-*       s   - Internal state (persistent across calls)
+*       s   - Internal state 
 *       pc  - Previous clock sample
 *       c   - Current clock sample
 *       clr - Async clear, active low
@@ -224,59 +218,16 @@ for( int i = 0; i < n/2; i++ ) out[i] = in[2*i];
 
 /*FN****************************************************************************
 *
-*   static void Print_Wave( const char *name, int n, const int *v,
-*                            float phase, int last )
-*
-*   Purpose: Print a 0/1 signal as a WaveDrom wave string.
-*            Appends phase field if phase != 0.
-*
-*   Parameters:
-*       name  - Signal name
-*       n     - Number of samples
-*       v     - Signal array
-*       phase - WaveDrom phase offset (0 = none)
-*       last  - 1 if this is the last signal (no comma)
-*
-*   Register of Revisions:
-*   DATE        RESPONSIBLE  COMMENT
-*   ----------  -----------  -------------------------
-*   MAR 04/26   Sofia V      Initial implementation
-*
-*******************************************************************************/
-
-static void
-Print_Wave( const char *name, int n, const int *v, float phase, int last )
-{
-printf( "  { \"name\": \"%s\", \"wave\": \"", name );
-
-int prev = v[0] & 1;
-putchar( prev ? '1' : '0' );
-for( int i = 1; i < n; i++ ) {
-    int cur = v[i] & 1;
-    putchar( cur == prev ? '.' : (cur ? '1' : '0') );
-    prev = cur;
-}
-
-if( phase != 0.0f ) {
-    putchar( '.' );
-    printf( "\", \"phase\": %.1f }%s\n", phase, last ? "" : "," );
-} else
-    printf( "\" }%s\n", last ? "" : "," );
-
-} /* Print_Wave */
-
-/*FN****************************************************************************
-*
 *   static void Print_Wave_X( const char *name, int n, const int *v,
 *                              float phase, int last )
 *
-*   Purpose: Print a 0/1/x signal as a WaveDrom wave string.
-*            Values of -1 are rendered as 'x' (high impedance).
+*   Purpose: Print a signal as a WaveDrom wave string.
+*            Values of -1 are shown as 'x' (high impedance).
 *
 *   Parameters:
 *       name  - Signal name
 *       n     - Number of samples
-*       v     - Signal array (-1 = high-Z)
+*       v     - Signal array (-1 = high Z)
 *       phase - WaveDrom phase offset (0 = none)
 *       last  - 1 if this is the last signal (no comma)
 *
@@ -312,17 +263,18 @@ if( phase != 0.0f ) {
 /*FN****************************************************************************
 *
 *   static void Print_Clock( const char *name, int n_raw, const int *v,
-*                             float phase, int last )
+*                             float phase, int offset, int last )
 *
-*   Purpose: Print a clock signal as WaveDrom wave string.
-*            Reads even-indexed samples: 1 -> 'P' (pulse), 0 -> '0' (missed).
+*   Purpose: Print a clock signal as WaveDrom wave string with period: 2.
+*            Puts zero characters according to offset before the clock starts.
 *
 *   Parameters:
-*       name  - Signal name
-*       n_raw - Length of raw (2x rate) array
-*       v     - Raw signal array
-*       phase - WaveDrom phase offset (0 = none)
-*       last  - 1 if this is the last signal (no trailing comma)
+*       name   - Signal name
+*       n_raw  - Length of array
+*       v      - Signal array
+*       phase  - WaveDrom phase offset (0 = none, 1 = half cycle shift)
+*       offset - Signal starts at offset
+*       last   - 1 if this is the last signal (no comma)
 *
 *   Register of Revisions:
 *   DATE        RESPONSIBLE  COMMENT
@@ -332,16 +284,17 @@ if( phase != 0.0f ) {
 *******************************************************************************/
 
 static void
-Print_Clock( const char *name, int n_raw, const int *v, float phase, int last )
+Print_Clock( const char *name, int n_raw, const int *v,
+             float phase, int offset, int last )
 {
 printf( "  { \"name\": \"%s\", \"wave\": \"", name );
 
-for( int i = 0; i < n_raw; i += 2 ) putchar( v[i] ? 'P' : '0' );
+for( int j = 0; j < (offset-1); j++ ) putchar( '0' );
+for( int i = offset; i < n_raw; i += 4 ) putchar( v[i] ? 'P' : '0' );
 
-if( phase != 0.0f ) {
-    putchar( '.' );
-    printf( "\", \"phase\": %.1f }%s\n", phase, last ? "" : "," );
-} else
-    printf( "\" }%s\n", last ? "" : "," );
+if( phase != 0.0f )
+    printf( "\", \"period\": 2, \"phase\": %.0f }%s\n", phase, last ? "" : "," );
+else
+    printf( "\", \"period\": 2 }%s\n", last ? "" : "," );
 
 } /* Print_Clock */
