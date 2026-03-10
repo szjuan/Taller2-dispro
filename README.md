@@ -310,7 +310,9 @@ setup()
   └─ Part 4: Imprimir JSON WaveDrom por Serial
 loop() → vacío (todo ocurre una sola vez en setup)
 ```
+A continuación, se muestra la señal simulada utilizando el formato JSON impreso por el Arduino en consola:
 
+![Signal Arduino](ImgsReadme/ResP2.png)
 
 
 ### Punto 3 — Flip-Flop Data en Arduino UNO
