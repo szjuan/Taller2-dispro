@@ -333,7 +333,10 @@ A continuación, se muestra la señal simulada utilizando el formato JSON impres
 | 8 | Q | Salida | `OUTPUT` |
 | 9 | Q' (Qn) | Salida | `OUTPUT` |
 
-> Los pines de entrada se configuran con `INPUT_PULLUP`, por lo que las señales activas en bajo (CLR, PRE) se activan conectando el pin a GND.
+![Tinkercad Arduino](ImgsReadme/ResP3.png)
+
+El funcionamiento de este circuito puede verse en el siguiente video de youtube: 
+[![Watch the demo](https://img.youtube.com/vi/i7zhsgct7YU/0.jpg)](https://youtu.be/i7zhsgct7YU?si=MUUcm51f0uRZQ4HF)
 
 #### Lógica de funcionamiento
 
