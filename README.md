@@ -193,7 +193,7 @@ El ejecutable se llama `Run_Punto_Taller1` y llama en secuencia a las tres funci
 
 Simula un **LFSR de 3 Flip-Flops con realimentación XOR** (Linear Feedback Shift Register). El circuito corresponde al esquema del taller:
 
-![Circuito Punto 1.1](ImgsReadme/CircP1v2.png)
+![Circuito Punto 1.1](ImgsReadme/CircP1V2.png)
 
 **Señales simuladas:** `clk`, `clr`, `pre`, `Q0`, `Q1`, `Q2`, `Q3`, `QS` (carry serial), `G` (XOR), `P` (AND).
 
