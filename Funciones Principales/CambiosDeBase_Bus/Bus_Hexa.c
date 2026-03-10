@@ -1,3 +1,28 @@
+
+/*FN****************************************************************************
+*
+*   void bus4_to_hex(int a3[], int a2[], int a1[], int a0[],
+*   int index, char out[2]);
+*
+*   void bus8_to_hex(int a7[], int a6[], int a5[], int a4[],int a3[], int a2[], int a1[], int a0[],
+*   int index,char out[3])
+*
+*   counter_to_hex2(const int cnt[], int index, char out[3])
+*
+*   Return: Recibe buses de bits (4Bits, 8Bits, 1Bit) y los transforma a base hexa.
+*
+*   Registro de Versiones:
+*
+*   DATE       RESPONSABLE           COMENTARIO
+*   -----------------------------------------------------------------------
+*   Marzo  8/26  Juan Andres Sanchez   Implementación Inicial
+*
+*   REVISADO
+*   -----------------------------------------------------------------------
+*   Sofia Vega, Andres Trujillo
+*
+*******************************************************************************/
+
 void bus4_to_hex(int a3[], int a2[], int a1[], int a0[],
 int index, char out[2])
 {
@@ -14,6 +39,7 @@ int index, char out[2])
 }
 
 void bus8_to_hex(int a7[], int a6[], int a5[], int a4[],int a3[], int a2[], int a1[], int a0[],
+
 int index,char out[3]){
     unsigned char value =
             ((a7[index] & 1) << 7) |

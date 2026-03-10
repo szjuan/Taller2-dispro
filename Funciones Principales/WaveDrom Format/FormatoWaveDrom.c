@@ -4,6 +4,37 @@
 #include "FormatoWaveDrom.h"
 
 
+/*FN****************************************************************************
+*
+*   void print_wave(const char *signal_name,const int max,const int *signal_values,int is_last_signal);
+*   void print_clock(const char *name,const int max, int is_last);
+*   void find_replace(const int *input_values,int input_size,int *output_values);
+*   void print_bus_hex(const char *name, int size, char hexData[][3], int is_last);
+*   void counter_to_decimal(int *cnt_array, int size, char dec_array[][3]);
+*
+*   Return: print_wave() Imprime una señal codificada en C para exportar a Wavedrom.
+*   Return: print_clock() Imprime el reloj codificado en C para exportar a Wavedrom.
+*   Return: find_replace() Recorre el arreglo de una señal, y simplifica cualquier numero repetido
+*           por 1 solo.
+*   Return: print_bus_hex() Imprime una señal codificada en C para exportar a Wavedrom pero en base
+*           hexa.
+*   Return: counter_to_decimal() Cambia el formato de un arreglo en bits a decimal.
+*
+*   Registro de Versiones:
+*
+*   DATE       RESPONSABLE           COMENTARIO
+*   -----------------------------------------------------------------------
+*   Marzo  8/26  Juan Andres Sanchez   Implementación Inicial
+*
+*   REVISADO
+*   -----------------------------------------------------------------------
+*   Sofia Vega, Andres Trujillo
+*
+*******************************************************************************/
+
+
+
+
 void print_wave(const char *signal_name,const int max,const int *signal_values,int is_last_signal){
     printf("  { \"name\": \"%s\", \"wave\": \"", signal_name);
 

@@ -1,6 +1,29 @@
 #include "CircuitosASCII.h"
 #include <stddef.h>
 
+/*FN****************************************************************************
+*
+*   const char *DESPLAZAMIENTO[];
+*   const char *INCREMENTADOR[]:
+*   const char *INCREMENTADOR[];
+*   const char *SUMADOR[];
+*
+*   Return: Ninguna funcion retorna nada, unicamente se utilizan para almacenar
+*           la representacion ASCII de los circuitos.
+*
+*   Registro de Versiones:
+*
+*   DATE       RESPONSABLE           COMENTARIO
+*   -----------------------------------------------------------------------
+*   Marzo  8/26  Juan Andres Sanchez   Implementación Inicial
+*
+*   REVISADO
+*   -----------------------------------------------------------------------
+*   Sofia Vega, Andres Trujillo
+*
+*******************************************************************************/
+
+
 const char *DESPLAZAMIENTO[] = {
     "RESET --------*---------*-----------*-------------------*   ",
     "              |         |           |                   |   ",
