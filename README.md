@@ -18,7 +18,7 @@
    - [Punto 2 — Simulación de Flip-Flop D en Arduino](#punto-2--simulación-de-flip-flop-d-en-arduino)
    - [Punto 3 — Flip-Flop Data en Arduino UNO](#punto-3--flip-flop-data-en-arduino-uno)
    - [Punto 4 — ASCII Art y EEPROM](#punto-4--ascii-art-y-eeprom)
-   - [Punto 5 — Pendiente](#punto-5--pendiente)
+   - [Punto 5 — Registro de Desplazamiento SN74HC595](#punto-5--pendiente)
 5. [Compilación y Ejecución](#compilación-y-ejecución)
 
 ---
