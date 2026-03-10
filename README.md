@@ -476,7 +476,7 @@ El SN74HC595 está compuesto por dos registros en cascada:
 | `SER` | Dato serial de entrada |
 | `RCLK` | Reloj del registro de almacenamiento |
 | `SRCLR` | Clear asíncrono activo en bajo del shift register |
-| `OE#` | Output enable activo en alto: pone QA–QH en alta impedancia |
+| `OE` | Output enable activo en alto: pone QA–QH en alta impedancia |
 | `SH0`–`SH7` | Bits internos del registro de desplazamiento |
 | `ST0`–`ST7` | Bits internos del registro de almacenamiento |
 | `QA`–`QH` | Salidas paralelas (`x` cuando OE activo) |
