@@ -29,11 +29,18 @@ void gotoxy(int x, int y) {
     printf("\033[%d;%dH", y, x);
 }
 
-void draw_ascii(const char *art[]) {
+void draw_ascii(int x, int y, const char *art[]) {
     int i = 0;
     while (art[i] != NULL) {
-        printf("%s\n", art[i]);
+        gotoxy(x, y + i);
+        printf("%s", art[i]);
         i++;
     }
     fflush(stdout);
+}
+
+void draw_block(int x, int y, const char *title, const char *art[]) {
+    gotoxy(x, y);
+    printf("%s", title);
+    draw_ascii(x, y + 2, art);
 }

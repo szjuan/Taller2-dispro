@@ -6,35 +6,34 @@
 
 int main(void){
 
-   printf("\"--------------------------------------------\"\n");
-   printf("\"Simulacion de los Circuitos Digitales:\"\n");
-   printf("\"--------------------------------------------\"\n\n");
+    printf("--------------------------------------------\n");
+    printf("Simulacion de los Circuitos Digitales:\n");
+    printf("--------------------------------------------\n\n");
 
-   printf("\"Registro de Desplazamiento\" \n");
-   Registro_de_Desplazamiento();
-   printf("\"Incrementador Serial\" \n");
-   Incrementador_Serial_4Bits();
-   printf("\"Sumador Completo\"\n");
-   Sumador_Completo_8Bits();
+    printf("Registro de Desplazamiento\n");
+    Registro_de_Desplazamiento();
 
-   printf("\n\"--------------------------------------------\"\n");
-   printf("\"Dibujos de los Circuitos Digitales:\"\n");
-   printf("\"--------------------------------------------\"\n\n");
-
-   printf("\"Registro de Desplazamiento\" \n");
-   printf("\n");
-   draw_ascii(DESPLAZAMIENTO);
-   printf("\n");
-   printf("\"Incrementador Serial\" \n");
-   printf("\n");
-   draw_ascii(INCREMENTADOR);
-   printf("\n");
-   printf("\"Sumador Completo\"\n");
-   printf("\n");
-   draw_ascii(SUMADOR);
-   printf("\n");
+    printf("\nIncrementador Serial\n");
+    Incrementador_Serial_4Bits();
 
 
+    printf("\nSumador Completo\n");
+    Sumador_Completo_8Bits();
 
+    /* Pausa opcional */
+    printf("\nPresiona Enter para ver los dibujos...");
+    getchar();
+
+    /* Limpiar pantalla */
+    printf("\033[2J");
+    printf("\033[H");
+
+    printf("--------------------------------------------\n");
+    printf("Dibujos de los Circuitos Digitales:\n");
+    printf("--------------------------------------------\n\n");
+
+    draw_block(10,5,  "Registro de Desplazamiento", DESPLAZAMIENTO);
+    draw_block(20,25, "Incrementador Serial", INCREMENTADOR);
+    draw_block(30,45, "Sumador Completo", SUMADOR);
 
 }
