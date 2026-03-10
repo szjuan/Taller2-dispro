@@ -40,7 +40,7 @@ Este taller busca consolidar el dominio de los **circuitos secuenciales digitale
 ```
 Taller2-dispro/
 │
-├── Funciones Principales/          ← Librería base: compuertas, WaveDrom, conversión de bases, Dibujs en ASCII
+├── Funciones Principales/             Librería base: compuertas, WaveDrom, conversión de bases, Dibujs en ASCII
 │   ├── Compuertas Logicas/
 │   │   ├── LogicGates.h
 │   │   ├── AND_gate.c
@@ -59,7 +59,7 @@ Taller2-dispro/
 │       │── DibujarASCII.h
 │       └── DibujarASCII.c
 │
-├── Circuitos Secuenciales Digitales/  ← Librería base: Flip-Flops, Clocks, Contadores
+├── Circuitos Secuenciales Digitales/    Librería base: Flip-Flops, Clocks, Contadores
 │   ├── Clocks/
 │   │   ├── Clocks.h
 │   │   └── Clocks.c
@@ -71,9 +71,11 @@ Taller2-dispro/
 │       └── Contadores_4Bit.c
 │
 ├── SolucionTaller/
-│   ├── Punto1/                     ← Simulaciones en C (LFSR, Incrementador, Sumador)
-│   ├── Punto3/                     ← Flip-Flop Data en Arduino UNO (.ino)
-│   └── Punto4/                     ← ASCII Art en C y en ESP8266 con EEPROM (.ino)
+│   ├── Punto1/                       Simulaciones en C (LFSR, Incrementador, Sumador)
+│   │   Punto2/                       Flip-Flop Data en Arduino UNO (.ino) 
+│   ├── Punto3/                       Flip-Flop Data en Arduino UNO (.ino) con datos reales
+│   └── Punto4/                       ASCII Art en C y en ESP8266 con EEPROM (.ino)
+│   └── Punto5/                       Simulación del Shift Register 74HC595
 │
 └── CMakeLists.txt
 ```
@@ -198,7 +200,7 @@ Simula un **LFSR de 3 Flip-Flops con realimentación XOR** (Linear Feedback Shif
 **Condiciones iniciales:** `Q3=0, Q2=1, Q1=0`.  
 **Duración:** 140 muestras (70 ciclos de reloj completos).
 
-Cada ciclo, los datos se desplazan de Q1 → Q2 → Q3, mientras que `D = XOR(Q2, Q3)` y el resultado de `Q3` hace que el contador cuente o no.
+Cada ciclo, los datos se desplazan de Q1 a Q2 a Q3, mientras que `D = XOR(Q2, Q3)` y el resultado de `Q3` hace que el contador cuente o no.
 
 A coninuación se encuentra la imagen de diagrama de tiempo de este circuito:
 ![Circuito Punto 1.1](ImgsReadme/ResP1.1.png)
@@ -218,7 +220,7 @@ Simula un **incrementador serial de 4 bits** compuesto por un registro de despla
 **Condiciones iniciales:** `Q3=0, Q2=1, Q1=1, Q0=1, QS=1`.  
 **Duración:** 140 muestras (70 ciclos).
 
-En cada ciclo de reloj el dato se desplaza a través de la cadena `Q3 → Q2 → Q1 → Q1`, mientras que `QS` se retroalimenta con la señal `P` (acarreo). Las señales combinacionales son:
+En cada ciclo de reloj el dato se desplaza a través de la cadena `Q3 a Q2 a Q1 a Q1`, mientras que `QS` se retroalimenta con la señal `P` (acarreo). Las señales combinacionales son:
 
 - `G = XOR(Q0, QS)` — bit de suma (salida serializada).  
 - `P = AND(Q0, QS)` — acarreo al siguiente ciclo.
@@ -333,7 +335,10 @@ A continuación, se muestra la señal simulada utilizando el formato JSON impres
 | 8 | Q | Salida | `OUTPUT` |
 | 9 | Q' (Qn) | Salida | `OUTPUT` |
 
-> Los pines de entrada se configuran con `INPUT_PULLUP`, por lo que las señales activas en bajo (CLR, PRE) se activan conectando el pin a GND.
+![Tinkercad Arduino](ImgsReadme/ResP3.png)
+
+El funcionamiento de este circuito puede verse en el siguiente video de youtube: 
+[![Watch the demo](https://img.youtube.com/vi/i7zhsgct7YU/0.jpg)](https://youtu.be/i7zhsgct7YU?si=MUUcm51f0uRZQ4HF)
 
 #### Lógica de funcionamiento
 
@@ -426,7 +431,7 @@ Sketch para **ESP8266** que almacena y recupera datos desde la EEPROM emulada en
 El dibujo ASCII completo ocupa varios KB, más de lo que caben en 1024 bytes de EEPROM. La solución es guardar solo **números pequeños (IDs)** que apuntan a cada línea del dibujo:
 
 - El arreglo `LINEAS[]` (con las 34 líneas del dibujo) vive en la memoria del programa como `const char*`.
-- En EEPROM solo se guardan los índices `1, 2, 3, ..., 34` seguidos de un `0` como marcador de fin — apenas 35 bytes en total.
+- En EEPROM solo se guardan los índices `1, 2, 3, ..., 34` seguidos de un `0` como marcador de fin (apenas 35 bytes en total).
 - Al leer, el sketch recorre esos IDs y por cada uno imprime `LINEAS[id - 1]` por Serial.
 
 **Firma de validación (`LN10`):**
@@ -445,11 +450,11 @@ setup()
   ├─ Serial.begin(115200)
   ├─ EEPROM.begin(1024)
   ├─ ¿Tiene firma 'LN10'?
-  │    ├─ NO → escribir firma → guardar IDs → EEPROM.commit()
+  │    ├─ NO -> escribir firma -> guardar IDs -> EEPROM.commit()
   │    │        └─ imprime bytes usados y bytes libres por Serial
-  │    └─ SÍ → saltar escritura
+  │    └─ SÍ -> saltar escritura
   └─ imprimir_ascii_desde_eeprom()
-       └─ Lee ID por ID → imprime LINEAS[id-1] por Serial hasta encontrar 0
+       └─ Lee ID por ID -> imprime LINEAS[id-1] por Serial hasta encontrar 0
 loop() → vacío (todo ocurre una sola vez en setup)
 ```
 
@@ -498,8 +503,7 @@ Esta se puede comparar el diagrama original del datasheet que se muestra a conti
 
 ![Diagrama OG](ImgsReadme/ResP5b.png)
 
-Adicionalmente, se puede observar el funcionamiento de este componente en tiempo real utilizando el simulador que se encuentra en la siguiente
-sección de código ejecutable.
+Adicionalmente, se puede observar el funcionamiento de este componente en tiempo real utilizando el simulador que se encuentra en la siguiente sección de código ejecutable.
 
 ---
 
