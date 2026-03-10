@@ -236,7 +236,7 @@ A coninuación se encuentra la imagen de diagrama de tiempo de este circuito:
 
 Simula un **sumador completo serial de 8 bits** con dos registros de desplazamiento (uno para operando A y otro para B) y un Flip-Flop de acarreo (`QS`):
 
-![Circuito Punto 1.3](ImgsReadme/CircP3V2.png)
+![Circuito Punto 1.3](ImgsReadme/CircP3v2.png)
 
 **Valores iniciales:**
 - Operando A: `A7=1, A6=1, A5=1, A4=0, A3=0, A2=1, A1=1, A0=0` → `1110 0110` = `0xE6` (decimal 230)
